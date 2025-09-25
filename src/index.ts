@@ -36,17 +36,18 @@ export default {
     }
 
     const reader = await CarReader.fromIterable(res.body)
+    const blocksReader = reader.blocks()
+
     const entries = exporter(
       `${cid}${subpath}`,
       {
         async get(blockCid) {
-          // The cast to `any` is a workaround for the following TypeScript error
-          // The types of 'toV0()[Symbol.toStringTag]' are incompatible between these types.
-          //   Type 'string' is not assignable to type '"CID"'
-          const block = await reader.get(/** @type {any} */ blockCid)
-          if (!block) {
+          const res = await blocksReader.next()
+          if (res.done || !res.value) {
             throw new Error(`Block ${blockCid} not found in CAR ${cid}`)
           }
+          const block = res.value
+
           try {
             await validateBlock(block)
           } catch (err) {
