@@ -48,6 +48,13 @@ export default {
           }
           const block = res.value
 
+          // TODO: compare multihashes only
+          if (block.cid.toString() !== blockCid.toString()) {
+            throw new Error(
+              `Unexpected block CID ${block.cid}, expected ${blockCid}`,
+            )
+          }
+
           try {
             await validateBlock(block)
           } catch (err) {
