@@ -1,18 +1,28 @@
 {
-	"name": "poc-car-stream-to-raw-stream",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"test": "vitest",
-		"cf-typegen": "wrangler types"
-	},
-	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.8.19",
-		"typescript": "^5.5.2",
-		"vitest": "~3.2.0",
-		"wrangler": "^4.40.0"
-	}
+  "name": "poc-car-stream-to-raw-stream",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "cf-typegen": "wrangler types",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "lint": "prettier --check . && tsc -p .",
+    "lint:fix": "prettier --write .",
+    "start": "wrangler dev",
+    "test": "vitest"
+  },
+  "prettier": "@checkernetwork/prettier-config",
+  "dependencies": {
+    "@ipld/car": "^5.4.2",
+    "@web3-storage/car-block-validator": "^1.2.2",
+    "ipfs-unixfs-exporter": "^13.7.3"
+  },
+  "devDependencies": {
+    "@checkernetwork/prettier-config": "^1.0.1",
+    "@cloudflare/vitest-pool-workers": "^0.8.19",
+    "prettier": "^3.6.2",
+    "typescript": "^5.5.2",
+    "vitest": "~3.2.0",
+    "wrangler": "^4.40.0"
+  }
 }
