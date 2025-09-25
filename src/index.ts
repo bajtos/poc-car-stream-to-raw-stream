@@ -22,7 +22,7 @@ import {
 export default {
   async fetch(request, env, ctx): Promise<Response> {
     const cid = 'bafybeiagrjpf2rwth5oylc64czsrz2jm7a4fgo67b2luygqjrivjbswuku'
-    const subpath = '/rusty-lassie.png'
+    const subpath = URL.parse(request.url)?.pathname
 
     const { signal } = request
 
@@ -63,24 +63,18 @@ export default {
 
     for await (const entry of entries) {
       signal?.throwIfAborted()
+      console.log(`Entry: ${entry.path} (${entry.type})`)
 
-      console.log(
-        `Entry: ${entry.path} (${entry.type}) ${describeEntry(entry)}`,
-      )
-
-      // Depending on size, entries might be packaged as `file` or `raw`
-      // https://github.com/web3-storage/w3up/blob/e8bffe2ee0d3a59a977d2c4b7efe425699424e19/packages/upload-client/src/unixfs.js#L11
-      if (entry.path !== `${cid}${subpath}`) {
+      const expectedPath = subpath === '/' ? cid : `${cid}${subpath}`
+      if (entry.path !== expectedPath) {
         throw new Error(
           `Unexpected entry - wrong path: ${describeEntry(entry)}`,
         )
       }
 
       if (entry.type !== 'file') {
-        continue
-        // throw new Error(
-        // `Unexpected entry - wrong type: ${describeEntry(entry)}`,
-        // )
+        console.log(`Unexpected entry - wrong type: ${describeEntry(entry)}`)
+        return new Response('Not Found', { status: 404 })
       }
 
       const entryContent = entry.content()
